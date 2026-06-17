@@ -1,0 +1,240 @@
+@model PaginatedList<EcoRaeeUac.Models.MaterialEducativo>
+
+@{
+    ViewData["Title"] = "Material Educativo";
+}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-end mb-4 gap-3">
+    <div>
+        <h2 class="font-display-lg text-on-surface mb-1">Galería de Recursos</h2>
+        <p class="font-body-lg text-on-surface-variant" style="max-width:600px;">
+            Gestiona y distribuye material educativo sobre la correcta disposición de Residuos de Aparatos Eléctricos y Electrónicos (RAEE) en la comunidad universitaria.
+        </p>
+    </div>
+    <a class="btn btn-primary d-flex align-items-center gap-2" asp-action="Create">
+        <span class="material-symbols-outlined" style="font-size:18px;">add</span>
+        Subir Nuevo Material
+    </a>
+</div>
+
+<form method="get" class="d-flex flex-wrap gap-2 mb-3">
+    <div class="search-wrap">
+        <span class="material-symbols-outlined position-absolute" style="left:12px;top:50%;transform:translateY(-50%);font-size:18px;color:var(--outline);pointer-events:none;">search</span>
+        <input type="text" name="searchString" class="form-control" placeholder="Buscar material..." value="@Model.SearchString" style="padding-left:36px;" />
+    </div>
+    <button class="btn btn-primary d-flex align-items-center gap-1 search-btn" type="submit">
+        <span class="material-symbols-outlined" style="font-size:16px;">search</span> Buscar
+    </button>
+    @if (!string.IsNullOrEmpty(Model.SearchString))
+    {
+        <a asp-action="Index" class="btn btn-outline-secondary d-flex align-items-center gap-1 search-btn" asp-route-tipo="@ViewBag.TipoSeleccionado">
+            <span class="material-symbols-outlined" style="font-size:16px;">close</span> Limpiar
+        </a>
+    }
+    @if (!string.IsNullOrEmpty(ViewBag.TipoSeleccionado))
+    {
+        <input type="hidden" name="tipo" value="@ViewBag.TipoSeleccionado" />
+    }
+</form>
+
+<div class="filter-wrap mb-4 pb-2 border-bottom" style="border-color:var(--outline-variant);">
+    <div class="filter-bar">
+        <a href="@Url.Action("Index", new { tipo = "", searchString = Model.SearchString })" class="btn-filter @(string.IsNullOrEmpty(ViewBag.TipoSeleccionado) ? "active" : "")">Todos</a>
+        <a href="@Url.Action("Index", new { tipo = "Infografía", searchString = Model.SearchString })" class="btn-filter @(ViewBag.TipoSeleccionado == "Infografía" ? "active" : "")">Infografías</a>
+        <a href="@Url.Action("Index", new { tipo = "Video", searchString = Model.SearchString })" class="btn-filter @(ViewBag.TipoSeleccionado == "Video" ? "active" : "")">Videos</a>
+        <a href="@Url.Action("Index", new { tipo = "PDF", searchString = Model.SearchString })" class="btn-filter @(ViewBag.TipoSeleccionado == "PDF" ? "active" : "")">Documentos</a>
+        <a href="@Url.Action("Index", new { tipo = "Noticia", searchString = Model.SearchString })" class="btn-filter @(ViewBag.TipoSeleccionado == "Noticia" ? "active" : "")">Noticias</a>
+    </div>
+</div>
+
+<div class="row g-3">
+    @if (!Model.Any())
+    {
+        <div class="col-12">
+            <div class="card-custom p-5 text-center">
+                <span class="material-symbols-outlined" style="font-size:48px;color:var(--outline);">menu_book</span>
+                <p class="font-body-lg text-on-surface-variant mt-2 mb-0">No hay material educativo publicado todavía.</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        @foreach (var item in Model)
+        {
+            <div class="col-12 col-md-6 col-lg-4">
+                <article class="card-custom d-flex flex-column overflow-hidden h-100">
+                    @if (item.Tipo == "Infografía" || item.Tipo == "Noticia")
+                    {
+                        <div class="position-relative" style="height:140px;overflow:hidden;background:var(--surface-container-high);">
+                            @if (!string.IsNullOrEmpty(item.RutaArchivo) && item.ObtenerTipoContenido() == "imagen")
+                            {
+                                <img src="@item.RutaArchivo" alt="@item.Titulo" class="w-100 h-100" style="object-fit:cover;" />
+                            }
+                            else
+                            {
+                                <div class="w-100 h-100 d-flex align-items-center justify-content-center text-on-surface-variant">
+                                    <span class="material-symbols-outlined" style="font-size:48px;">@(item.Tipo == "Infografía" ? "image" : "newspaper")</span>
+                                </div>
+                            }
+                            <div class="position-absolute top-0 end-0 m-2">
+                                <span class="material-symbols-outlined text-primary" style="background:var(--surface-container-lowest);border-radius:50%;padding:4px;font-size:18px;">@(item.Tipo == "Infografía" ? "image" : "newspaper")</span>
+                            </div>
+                            <div class="position-absolute bottom-0 start-0 m-2">
+                                <span class="tag @(item.Tipo == "Infografía" ? "tag-tertiary" : "tag-primary")">@item.Tipo</span>
+                            </div>
+                        </div>
+                    }
+                    else if (item.Tipo == "Video")
+                    {
+                        <div class="position-relative d-flex align-items-center justify-content-center" style="height:140px;background:var(--surface-container-highest);overflow:hidden;">
+                            @if (!string.IsNullOrEmpty(item.RutaArchivo))
+                            {
+                                <img src="@item.RutaArchivo" alt="@item.Titulo" class="w-100 h-100" style="object-fit:cover;opacity:0.6;" />
+                            }
+                            <div class="position-absolute inset-0 bg-black" style="opacity:0.2;"></div>
+                            <div class="position-absolute d-flex align-items-center justify-content-center rounded-circle bg-white" style="width:48px;height:48px;box-shadow:0 4px 12px rgba(0,0,0,0.15);cursor:pointer;">
+                                <span class="material-symbols-outlined fill text-primary" style="font-size:28px;margin-left:2px;">play_arrow</span>
+                            </div>
+                            <div class="position-absolute top-0 end-0 m-2">
+                                <span class="material-symbols-outlined text-primary" style="background:var(--surface-container-lowest);border-radius:50%;padding:4px;font-size:18px;">smart_display</span>
+                            </div>
+                            <div class="position-absolute bottom-0 start-0 m-2">
+                                <span class="tag tag-secondary">Video</span>
+                            </div>
+                        </div>
+                    }
+                    else if (item.Tipo == "PDF")
+                    {
+                        <div class="p-3 border-bottom d-flex align-items-start gap-3" style="background:var(--surface-container-lowest);border-color:var(--outline-variant);">
+                            <div class="d-flex align-items-center justify-content-center rounded" style="width:48px;height:48px;background:var(--error-container);">
+                                <span class="material-symbols-outlined" style="font-size:28px;color:var(--error);">picture_as_pdf</span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <span class="tag tag-outline mb-1 d-inline-block">Documento Oficial</span>
+                                <h3 class="font-headline-md text-on-surface m-0" style="font-size:16px;">@item.Titulo</h3>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="p-3 d-flex flex-column flex-grow-1">
+                        @if (item.Tipo != "PDF")
+                        {
+                            <h3 class="font-headline-md text-on-surface mb-2">@item.Titulo</h3>
+                        }
+                        @if (!string.IsNullOrEmpty(item.EnlaceUrl))
+                        {
+                            <p class="font-body-sm text-on-surface-variant mb-3 flex-grow-1">Recurso disponible en: <a href="@item.EnlaceUrl" target="_blank" class="text-primary">@item.EnlaceUrl</a></p>
+                        }
+                        else if (!string.IsNullOrEmpty(item.RutaArchivo))
+                        {
+                            <p class="font-body-sm text-on-surface-variant mb-3 flex-grow-1">Archivo: @item.RutaArchivo.Split('/').LastOrDefault()</p>
+                        }
+                        else
+                        {
+                            <p class="font-body-sm text-on-surface-variant mb-3 flex-grow-1">Sin descripción disponible.</p>
+                        }
+
+                        @if (!string.IsNullOrEmpty(item.RutaArchivo))
+                        {
+                            var tipoContenido = item.ObtenerTipoContenido();
+                            if (tipoContenido == "pdf")
+                            {
+                                <div class="d-flex align-items-center justify-content-between bg-surface-container-low p-2 rounded-3 mb-3 border" style="border-color:var(--outline-variant);">
+                                    <div class="d-flex align-items-center gap-2 text-on-surface-variant">
+                                        <span class="material-symbols-outlined" style="font-size:18px;">description</span>
+                                        <span class="font-body-sm" style="font-size:13px;">@item.RutaArchivo.Split('/').LastOrDefault()</span>
+                                    </div>
+                                    <span class="font-body-sm text-outline" style="font-size:12px;">PDF</span>
+                                </div>
+                            }
+                            else if (tipoContenido == "video")
+                            {
+                                <video class="w-100 rounded-3 mb-3" style="max-height:140px;" controls>
+                                    <source src="@item.RutaArchivo" />
+                                </video>
+                            }
+                        }
+
+                        <div class="d-flex align-items-center justify-content-between mt-auto pt-2 border-top" style="border-color:var(--outline-variant);">
+                            <div class="d-flex align-items-center gap-1 text-outline font-body-sm">
+                                <span class="material-symbols-outlined" style="font-size:16px;">calendar_today</span>
+                                <span>@item.FechaPublicacion.ToShortDateString()</span>
+                            </div>
+                            <div class="d-flex gap-1">
+                                @if (!string.IsNullOrEmpty(item.RutaArchivo))
+                                {
+                                    var tc = item.ObtenerTipoContenido();
+                                    if (tc == "pdf")
+                                    {
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary rounded-2 p-1" title="Ver PDF">
+                                            <span class="material-symbols-outlined" style="font-size:18px;">picture_as_pdf</span>
+                                        </a>
+                                        <a asp-action="Download" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary rounded-2 p-1" title="Descargar">
+                                            <span class="material-symbols-outlined" style="font-size:18px;">download</span>
+                                        </a>
+                                    }
+                                    else if (tc == "imagen" || tc == "video")
+                                    {
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary rounded-2 p-1" title="Ver">
+                                            <span class="material-symbols-outlined" style="font-size:18px;">visibility</span>
+                                        </a>
+                                        <a asp-action="Download" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary rounded-2 p-1" title="Descargar">
+                                            <span class="material-symbols-outlined" style="font-size:18px;">download</span>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-action="Download" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary rounded-2 p-1" title="Descargar">
+                                            <span class="material-symbols-outlined" style="font-size:18px;">download</span>
+                                        </a>
+                                    }
+                                }
+                                else if (!string.IsNullOrEmpty(item.EnlaceUrl))
+                                {
+                                    <a href="@item.EnlaceUrl" target="_blank" class="btn btn-sm btn-outline-primary rounded-2 p-1" title="Abrir enlace">
+                                        <span class="material-symbols-outlined" style="font-size:18px;">open_in_new</span>
+                                    </a>
+                                }
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary rounded-2 p-1" title="Editar">
+                                    <span class="material-symbols-outlined" style="font-size:18px;">edit</span>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary rounded-2 p-1" title="Eliminar">
+                                    <span class="material-symbols-outlined" style="font-size:18px;color:var(--error);">delete</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        }
+    }
+</div>
+
+@if (Model.TotalPages > 1)
+{
+    <div class="d-flex justify-content-between align-items-center mt-3 p-3" style="background:var(--surface-bright);border-radius:0.75rem;">
+        <span class="font-body-sm text-on-surface-variant">
+            Mostrando @((Model.PageIndex - 1) * 12 + 1) a @Math.Min(Model.PageIndex * 12, Model.TotalCount) de @Model.TotalCount registros
+        </span>
+        <nav>
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                    <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageIndex - 1)" asp-route-searchString="@Model.SearchString" asp-route-tipo="@ViewBag.TipoSeleccionado">
+                        <span class="material-symbols-outlined" style="font-size:16px;">chevron_left</span>
+                    </a>
+                </li>
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-searchString="@Model.SearchString" asp-route-tipo="@ViewBag.TipoSeleccionado">@i</a>
+                    </li>
+                }
+                <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                    <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageIndex + 1)" asp-route-searchString="@Model.SearchString" asp-route-tipo="@ViewBag.TipoSeleccionado">
+                        <span class="material-symbols-outlined" style="font-size:16px;">chevron_right</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+}

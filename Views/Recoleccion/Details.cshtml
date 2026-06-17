@@ -1,0 +1,76 @@
+@model EcoRaeeUac.Models.RecoleccionRaee
+
+@{
+    ViewData["Title"] = "Detalles de Recolección";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-lg-8">
+        <div class="card-custom">
+            <div class="p-3 border-bottom d-flex justify-content-between align-items-center" style="background:var(--surface-bright);">
+                <h4 class="font-headline-md mb-0 text-primary">
+                    <span class="material-symbols-outlined" style="font-size:18px;">info</span>
+                    Detalles de la Recolección
+                </h4>
+                <a asp-action="Index" class="btn btn-outline-primary btn-sm">
+                    <span class="material-symbols-outlined" style="font-size:18px;">arrow_back</span>
+                    Volver
+                </a>
+            </div>
+            <div class="p-4">
+                <dl class="row">
+                    <dt class="col-sm-4 font-body-sm text-on-surface-variant">Tipo de Residuo</dt>
+                    <dd class="col-sm-8 font-body-sm text-on-surface"><span class="tag tag-primary">@Model.TipoResiduo</span></dd>
+                    <dt class="col-sm-4 font-body-sm text-on-surface-variant">Cantidad</dt>
+                    <dd class="col-sm-8 font-body-sm text-on-surface"><strong>@Model.Cantidad.ToString("F2")</strong> Kg</dd>
+                    <dt class="col-sm-4 font-body-sm text-on-surface-variant">Lugar</dt>
+                    <dd class="col-sm-8 font-body-sm text-on-surface">@Model.LugarRecoleccion</dd>
+                    <dt class="col-sm-4 font-body-sm text-on-surface-variant">Fecha</dt>
+                    <dd class="col-sm-8 font-body-sm text-on-surface">@Model.Fecha.ToLongDateString()</dd>
+                </dl>
+                <h5 class="font-headline-md mt-4 text-on-surface">Indicadores de Impacto Ambiental</h5>
+                <hr />
+                <div class="row">
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="stat-card">
+                            <div class="font-body-sm text-on-surface-variant">CO₂ Evitado</div>
+                            <div class="stat-number text-primary">@Model.Co2EvitadoKg.ToString("F2")</div>
+                            <div class="font-body-sm text-on-surface-variant">Kg</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="stat-card">
+                            <div class="font-body-sm text-on-surface-variant">Material Recuperado</div>
+                            <div class="stat-number text-primary">@Model.MaterialRecuperadoKg.ToString("F2")</div>
+                            <div class="font-body-sm text-on-surface-variant">Kg</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="stat-card">
+                            <div class="font-body-sm text-on-surface-variant">Árboles Salvados</div>
+                            <div class="stat-number text-primary">@Model.ArbolesSalvados</div>
+                            <div class="font-body-sm text-on-surface-variant">unid.</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="stat-card">
+                            <div class="font-body-sm text-on-surface-variant">Energía Ahorrada</div>
+                            <div class="stat-number text-primary">@Model.EnergiaAhorradaKwh.ToString("F2")</div>
+                            <div class="font-body-sm text-on-surface-variant">kWh</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+                        <span class="material-symbols-outlined" style="font-size:18px;">edit</span>
+                        Editar
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-primary" style="color:var(--error); border-color:var(--error);">
+                        <span class="material-symbols-outlined" style="font-size:18px;">delete</span>
+                        Eliminar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

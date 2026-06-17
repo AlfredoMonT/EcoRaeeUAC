@@ -1,0 +1,316 @@
+@model EcoRaeeUac.Models.ViewModels.ReportesViewModel
+
+@{
+    ViewData["Title"] = "Reportes e Indicadores";
+}
+
+<div class="mb-4">
+    <h2 class="font-display-lg text-on-surface mb-1">Panel de Impacto</h2>
+    <p class="font-body-lg text-on-surface-variant">Resumen de métricas de responsabilidad social y ambiental.</p>
+</div>
+
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 gap-3">
+    <div></div>
+    <div class="d-flex gap-2">
+        <a class="btn btn-outline-primary d-flex align-items-center gap-2" href="#">
+            <span class="material-symbols-outlined" style="font-size:18px;">download</span>
+            Exportar Datos
+        </a>
+        <a asp-action="ExportarExcel" class="btn btn-primary d-flex align-items-center gap-2">
+            <span class="material-symbols-outlined" style="font-size:18px;">description</span>
+            Generar Reporte RSU
+        </a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card-custom p-3 kpi-card">
+            <div class="blur-circle" style="background:var(--primary-fixed-dim);"></div>
+            <div class="d-flex justify-content-between align-items-start mb-2 position-relative">
+                <div>
+                    <p class="font-label-uppercase text-on-surface-variant mb-1">Total Participantes</p>
+                    <h3 class="stat-number text-on-surface m-0">@Model.IndicadoresImpacto.TotalParticipantes</h3>
+                </div>
+                <div class="d-flex align-items-center justify-content-center rounded-circle bg-secondary-fixed" style="width:40px;height:40px;">
+                    <span class="material-symbols-outlined text-secondary">groups</span>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-1 font-body-sm text-primary">
+                <span class="material-symbols-outlined" style="font-size:16px;">trending_up</span>
+                <span>+12% vs mes anterior</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card-custom p-3 kpi-card">
+            <div class="blur-circle" style="background:var(--tertiary-fixed-dim);"></div>
+            <div class="d-flex justify-content-between align-items-start mb-2 position-relative">
+                <div>
+                    <p class="font-label-uppercase text-on-surface-variant mb-1">Kilos RAEE Recolectados</p>
+                    <h3 class="stat-number text-on-surface m-0">@Model.IndicadoresImpacto.TotalRaeeRecolectadoKg.ToString("F0") <span class="font-body-lg text-on-surface-variant">kg</span></h3>
+                </div>
+                <div class="d-flex align-items-center justify-content-center rounded-circle bg-tertiary-fixed" style="width:40px;height:40px;">
+                    <span class="material-symbols-outlined text-tertiary">recycling</span>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-1 font-body-sm text-primary">
+                <span class="material-symbols-outlined" style="font-size:16px;">trending_up</span>
+                <span>Meta anual 65% alcanzada</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card-custom p-3 kpi-card">
+            <div class="blur-circle" style="background:var(--secondary-fixed-dim);"></div>
+            <div class="d-flex justify-content-between align-items-start mb-2 position-relative">
+                <div>
+                    <p class="font-label-uppercase text-on-surface-variant mb-1">Impacto Ambiental Positivo</p>
+                    <h3 class="stat-number text-on-surface m-0">@(Model.IndicadoresImpacto.TotalCo2EvitadoKg / 1000) <span class="font-body-lg text-on-surface-variant">t CO₂ eq</span></h3>
+                </div>
+                <div class="d-flex align-items-center justify-content-center rounded-circle bg-primary-fixed" style="width:40px;height:40px;">
+                    <span class="material-symbols-outlined text-primary">eco</span>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-1 font-body-sm text-on-surface-variant">
+                <span class="material-symbols-outlined" style="font-size:16px;">forest</span>
+                <span>Equivalente a @Model.IndicadoresImpacto.TotalArbolesSalvados árboles</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-lg-8">
+        <div class="card-custom p-3 d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom" style="border-color:var(--outline-variant);">
+                <h3 class="font-headline-md text-on-surface m-0">Participantes por Campaña</h3>
+                <select class="form-select" style="width:auto;font-size:14px;padding:0.25rem 1rem;">
+                    <option>Año @DateTime.Now.Year</option>
+                </select>
+            </div>
+            <div style="min-height:300px;">
+                <canvas id="participantsChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card-custom p-3 d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom" style="border-color:var(--outline-variant);">
+                <h3 class="font-headline-md text-on-surface m-0">Distribución de RAEE</h3>
+            </div>
+            <div style="min-height:300px;" class="d-flex align-items-center justify-content-center">
+                <canvas id="wasteDistributionChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card-custom p-3">
+    <div class="d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom" style="border-color:var(--outline-variant);">
+        <h3 class="font-headline-md text-on-surface m-0">Últimas Campañas RSU</h3>
+        <a href="@Url.Action("Index", "Campañas")" class="text-secondary text-decoration-none font-body-sm">Ver todas</a>
+    </div>
+    <div class="table-responsive">
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th>Campaña</th>
+                    <th>Fecha</th>
+                    <th>Tipo RAEE Principal</th>
+                    <th class="text-end">Volumen (kg)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.ParticipantesPorCampana.Any())
+                {
+                    <tr>
+                        <td colspan="4" class="text-center text-on-surface-variant py-3">No hay datos disponibles.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var item in Model.ParticipantesPorCampana.Take(5))
+                    {
+                        <tr>
+                            <td class="fw-semibold text-on-surface">@item.Campaña</td>
+                            <td class="text-on-surface-variant">@DateTime.Now.ToString("MMM dd, yyyy")</td>
+                            <td>
+                                <span class="tag tag-tertiary">Equipos IT</span>
+                            </td>
+                            <td class="text-end fw-semibold">@item.TotalParticipantes</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row g-3 mt-2">
+    <div class="col-md-6">
+        <div class="card-custom p-3">
+            <div class="d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom" style="border-color:var(--outline-variant);">
+                <h3 class="font-headline-md text-on-surface m-0">Indicadores de Impacto</h3>
+            </div>
+            <div class="row">
+                <dt class="col-sm-7 font-body-sm text-on-surface-variant">Total Campañas</dt>
+                <dd class="col-sm-5 text-end fw-semibold mb-2">@Model.IndicadoresImpacto.TotalCampañas</dd>
+                <dt class="col-sm-7 font-body-sm text-on-surface-variant">Total Participantes</dt>
+                <dd class="col-sm-5 text-end fw-semibold mb-2">@Model.IndicadoresImpacto.TotalParticipantes</dd>
+                <dt class="col-sm-7 font-body-sm text-on-surface-variant">Total Docentes Registrados</dt>
+                <dd class="col-sm-5 text-end fw-semibold mb-2">@Model.TotalDocentes</dd>
+                <dt class="col-sm-7 font-body-sm text-on-surface-variant">RAEE Recolectado</dt>
+                <dd class="col-sm-5 text-end fw-semibold mb-2">@Model.IndicadoresImpacto.TotalRaeeRecolectadoKg.ToString("F2") Kg</dd>
+                <dt class="col-sm-7 font-body-sm text-on-surface-variant">CO₂ Evitado</dt>
+                <dd class="col-sm-5 text-end fw-semibold mb-2">@Model.IndicadoresImpacto.TotalCo2EvitadoKg.ToString("F2") Kg</dd>
+                <dt class="col-sm-7 font-body-sm text-on-surface-variant">Energía Ahorrada</dt>
+                <dd class="col-sm-5 text-end fw-semibold mb-2">@Model.IndicadoresImpacto.TotalEnergiaAhorradaKwh.ToString("F2") kWh</dd>
+                <dt class="col-sm-7 font-body-sm text-on-surface-variant">Árboles Salvados</dt>
+                <dd class="col-sm-5 text-end fw-semibold mb-2">@Model.IndicadoresImpacto.TotalArbolesSalvados</dd>
+                <dt class="col-sm-7 font-body-sm text-on-surface-variant">Material Educativo</dt>
+                <dd class="col-sm-5 text-end fw-semibold mb-2">@Model.IndicadoresImpacto.TotalMaterialesPublicados</dd>
+                <dt class="col-sm-7 font-body-sm text-on-surface-variant">Promedio Participantes/Campaña</dt>
+                <dd class="col-sm-5 text-end fw-semibold mb-2">@Model.IndicadoresImpacto.PromedioParticipantesPorCampaña</dd>
+                <dt class="col-sm-7 font-body-sm text-on-surface-variant">Promedio RAEE/Recolección</dt>
+                <dd class="col-sm-5 text-end fw-semibold mb-2">@Model.IndicadoresImpacto.PromedioRaeePorRecoleccionKg Kg</dd>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card-custom p-3">
+            <div class="d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom" style="border-color:var(--outline-variant);">
+                <h3 class="font-headline-md text-on-surface m-0">Reporte RSU - @Model.ReporteRsu.Periodo</h3>
+            </div>
+            <p class="font-body-sm text-on-surface-variant mb-2">Responsabilidad Social Universitaria</p>
+            <div class="row">
+                <dt class="col-sm-7 font-body-sm text-on-surface-variant">Estudiantes Participantes</dt>
+                <dd class="col-sm-5 text-end fw-semibold mb-2">@Model.ReporteRsu.TotalEstudiantesParticipantes</dd>
+                <dt class="col-sm-7 font-body-sm text-on-surface-variant">Docentes Participantes</dt>
+                <dd class="col-sm-5 text-end fw-semibold mb-2">@Model.ReporteRsu.TotalDocentesParticipantes</dd>
+                <dt class="col-sm-7 font-body-sm text-on-surface-variant">Ciudadanos Beneficiarios</dt>
+                <dd class="col-sm-5 text-end fw-semibold mb-2">@Model.ReporteRsu.TotalCiudadanosBeneficiarios</dd>
+                <dt class="col-sm-7 font-body-sm text-on-surface-variant">RAEE Recolectado</dt>
+                <dd class="col-sm-5 text-end fw-semibold mb-2">@Model.ReporteRsu.TotalRaeeRecolectadoKg.ToString("F2") Kg</dd>
+                <dt class="col-sm-7 font-body-sm text-on-surface-variant">CO₂ Evitado</dt>
+                <dd class="col-sm-5 text-end fw-semibold mb-2">@Model.ReporteRsu.TotalCo2EvitadoKg.ToString("F2") Kg</dd>
+                <dt class="col-sm-7 font-body-sm text-on-surface-variant">Árboles Salvados</dt>
+                <dd class="col-sm-5 text-end fw-semibold mb-2">@Model.ReporteRsu.TotalArbolesSalvados</dd>
+                <dt class="col-sm-7 font-body-sm text-on-surface-variant">Campañas Realizadas</dt>
+                <dd class="col-sm-5 text-end fw-semibold mb-2">@Model.ReporteRsu.TotalCampañasRealizadas</dd>
+                <dt class="col-sm-7 font-body-sm text-on-surface-variant">Materiales Publicados</dt>
+                <dd class="col-sm-5 text-end fw-semibold mb-2">@Model.ReporteRsu.TotalMaterialesEducativos</dd>
+            </div>
+            <hr class="my-2" style="border-color:var(--outline-variant);" />
+            <p class="text-center text-on-surface-variant font-body-sm mb-0">
+                Reporte generado el @DateTime.Now.ToString("dd/MM/yyyy")
+            </p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const brandPrimary = '#0f5238';
+            const brandSecondary = '#255dad';
+            const brandTertiary = '#364d3c';
+            const gridColor = '#e1e3e4';
+            const textColor = '#404943';
+
+            Chart.defaults.color = textColor;
+            Chart.defaults.font.family = 'Inter';
+
+            // Participants Bar Chart
+            const ctxParticipants = document.getElementById('participantsChart');
+            if (ctxParticipants) {
+                const c = ctxParticipants.getContext('2d');
+                const gradient = c.createLinearGradient(0, 0, 0, 400);
+                gradient.addColorStop(0, '#2d6a4f');
+                gradient.addColorStop(1, '#95d4b3');
+
+                new Chart(c, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre'],
+                        datasets: [{
+                            label: 'Participantes',
+                            data: [120, 190, 300, 250, 200, 350, 400, 450],
+                            backgroundColor: gradient,
+                            borderRadius: 6,
+                            borderSkipped: false,
+                            barPercentage: 0.6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: 'rgba(25, 28, 29, 0.9)',
+                                padding: 12,
+                                cornerRadius: 8
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: gridColor, drawBorder: false },
+                                border: { dash: [4, 4] }
+                            },
+                            x: {
+                                grid: { display: false, drawBorder: false }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Waste Distribution Pie Chart
+            const ctxWaste = document.getElementById('wasteDistributionChart');
+            if (ctxWaste) {
+                const c = ctxWaste.getContext('2d');
+                new Chart(c, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Equipos IT', 'Pantallas', 'Pequeños Electro.', 'Grandes Electro.'],
+                        datasets: [{
+                            data: [45, 25, 20, 10],
+                            backgroundColor: ['#0f5238', '#255dad', '#4d6553', '#b1f0ce'],
+                            borderWidth: 2,
+                            borderColor: '#ffffff',
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '70%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    padding: 20,
+                                    usePointStyle: true,
+                                    pointStyle: 'circle',
+                                    font: { family: 'Inter', size: 12 }
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(25, 28, 29, 0.9)',
+                                padding: 12,
+                                cornerRadius: 8,
+                                callbacks: {
+                                    label: function(context) {
+                                        return ' ' + context.label + ': ' + context.parsed + '%';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+}

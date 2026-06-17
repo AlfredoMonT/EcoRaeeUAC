@@ -1,0 +1,41 @@
+@model EcoRaeeUac.Models.MaterialEducativo
+
+@{
+    ViewData["Title"] = "Eliminar Material";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-lg-8">
+        <div class="card-custom">
+            <div class="p-3 border-bottom d-flex align-items-center" style="background:var(--surface-bright)">
+                <span class="material-symbols-outlined me-2" style="font-size:24px;color:var(--error)">warning</span>
+                <h4 class="font-headline-md mb-0" style="color:var(--error)">Confirmar Eliminación</h4>
+            </div>
+            <div class="p-4">
+                <div class="alert p-3 rounded" style="background:var(--surface-container);color:var(--on-surface)">
+                    <span class="material-symbols-outlined" style="font-size:18px;color:var(--error)">info</span>
+                    <strong>¿Estás seguro de eliminar este material?</strong> Esta acción no se puede deshacer.
+                </div>
+                <dl class="row">
+                    <dt class="col-sm-4 text-on-surface-variant font-label-uppercase">Título</dt>
+                    <dd class="col-sm-8 text-on-surface font-body-sm">@Model.Titulo</dd>
+                    <dt class="col-sm-4 text-on-surface-variant font-label-uppercase">Tipo</dt>
+                    <dd class="col-sm-8 text-on-surface font-body-sm">@Model.Tipo</dd>
+                    <dt class="col-sm-4 text-on-surface-variant font-label-uppercase">Publicado</dt>
+                    <dd class="col-sm-8 text-on-surface font-body-sm">@Model.FechaPublicacion.ToShortDateString()</dd>
+                </dl>
+                <form asp-action="Delete">
+                    <input asp-for="Id" type="hidden" />
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="Index" class="btn btn-outline-primary">
+                            <span class="material-symbols-outlined" style="font-size:18px;">arrow_back</span> Cancelar
+                        </a>
+                        <button type="submit" class="btn" style="background:var(--error);color:#fff">
+                            <span class="material-symbols-outlined" style="font-size:18px;">delete_forever</span> Eliminar Definitivamente
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,48 @@
+@model EcoRaeeUac.Models.Docente
+
+@{
+    ViewData["Title"] = "Detalles del Docente";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-lg-8">
+        <div class="card-custom">
+            <div class="p-3 border-bottom" style="background:var(--surface-bright)">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="font-headline-md mb-0 text-on-surface">
+                        <span class="material-symbols-outlined" style="font-size:18px;">person</span>
+                        Detalles del Docente
+                    </h4>
+                    <a asp-action="Index" class="btn btn-outline-primary btn-sm">
+                        <span class="material-symbols-outlined" style="font-size:18px;">arrow_back</span>
+                        Volver
+                    </a>
+                </div>
+            </div>
+            <div class="p-4">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4 font-label-uppercase text-on-surface-variant">Nombre Completo</dt>
+                    <dd class="col-sm-8 font-body-sm text-on-surface">@Model.NombreCompleto</dd>
+                    <dt class="col-sm-4 font-label-uppercase text-on-surface-variant">Email</dt>
+                    <dd class="col-sm-8 font-body-sm text-on-surface">@Model.Email</dd>
+                    <dt class="col-sm-4 font-label-uppercase text-on-surface-variant">Teléfono</dt>
+                    <dd class="col-sm-8 font-body-sm text-on-surface">@(Model.Telefono ?? "No registrado")</dd>
+                    <dt class="col-sm-4 font-label-uppercase text-on-surface-variant">Especialidad</dt>
+                    <dd class="col-sm-8 font-body-sm text-on-surface">@(Model.Especialidad ?? "No especificada")</dd>
+                    <dt class="col-sm-4 font-label-uppercase text-on-surface-variant">Fecha de Registro</dt>
+                    <dd class="col-sm-8 font-body-sm text-on-surface">@Model.FechaRegistro.ToLongDateString()</dd>
+                </dl>
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">
+                        <span class="material-symbols-outlined" style="font-size:18px;">edit</span>
+                        Editar
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-primary" style="background:var(--error);border-color:var(--error)">
+                        <span class="material-symbols-outlined" style="font-size:18px;">delete</span>
+                        Eliminar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

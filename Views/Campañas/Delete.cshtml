@@ -1,0 +1,56 @@
+@model EcoRaeeUac.Models.CampañaAmbiental
+
+@{
+    ViewData["Title"] = "Eliminar Campaña";
+}
+
+<div class="row mt-4">
+    <div class="col-md-8 offset-md-2">
+        <div class="card-custom">
+            <div class="card-header d-flex align-items-center gap-2 p-3" style="background: var(--surface-bright); border-bottom: 1px solid var(--outline-variant);">
+                <span class="material-symbols-outlined" style="font-size: 18px; color: var(--error);">warning</span>
+                <h4 class="font-headline-md mb-0" style="color: var(--error);">Confirmar Eliminación</h4>
+            </div>
+            <div class="card-body p-4">
+                <div class="alert d-flex align-items-center gap-2" style="background: color-mix(in srgb, var(--error) 10%, transparent); border: 1px solid var(--error); color: var(--error);">
+                    <span class="material-symbols-outlined" style="font-size: 18px;">error</span>
+                    <span><strong>¿Estás seguro de eliminar esta campaña?</strong> Esta acción no se puede deshacer.</span>
+                </div>
+                <dl class="row">
+                    <dt class="col-sm-4 text-on-surface-variant font-body-sm">Nombre</dt>
+                    <dd class="col-sm-8 text-on-surface">@Model.Nombre</dd>
+                    <dt class="col-sm-4 text-on-surface-variant font-body-sm">Fecha</dt>
+                    <dd class="col-sm-8 text-on-surface">@Model.Fecha.ToShortDateString()</dd>
+                    <dt class="col-sm-4 text-on-surface-variant font-body-sm">Lugar</dt>
+                    <dd class="col-sm-8 text-on-surface">@Model.Lugar</dd>
+                    <dt class="col-sm-4 text-on-surface-variant font-body-sm">Responsable</dt>
+                    <dd class="col-sm-8 text-on-surface">@Model.Responsable?.NombreCompleto</dd>
+                    <dt class="col-sm-4 text-on-surface-variant font-body-sm">Participantes asociados</dt>
+                    <dd class="col-sm-8 text-on-surface">
+                        <span class="badge" style="background: var(--error);">@(Model.Participantes?.Count ?? 0)</span>
+                    </dd>
+                </dl>
+
+                @if (Model.Participantes != null && Model.Participantes.Any())
+                {
+                    <div class="alert d-flex align-items-center gap-2" style="background: color-mix(in srgb, var(--error) 10%, transparent); border: 1px solid var(--error); color: var(--error);">
+                        <span class="material-symbols-outlined" style="font-size: 18px;">warning</span>
+                        <span>Esta campaña tiene @Model.Participantes.Count participantes asignados. Se eliminarán junto con la campaña.</span>
+                    </div>
+                }
+
+                <form asp-action="Delete">
+                    <input asp-for="Id" type="hidden" />
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="Index" class="btn btn-outline-primary">
+                            <span class="material-symbols-outlined" style="font-size: 18px;">arrow_back</span> Cancelar
+                        </a>
+                        <button type="submit" class="btn" style="background: var(--error); color: white;">
+                            <span class="material-symbols-outlined" style="font-size: 18px;">delete_forever</span> Eliminar Definitivamente
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

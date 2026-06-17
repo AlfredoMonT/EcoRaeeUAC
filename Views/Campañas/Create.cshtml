@@ -1,0 +1,66 @@
+@model EcoRaeeUac.Models.CampañaAmbiental
+
+@{
+    ViewData["Title"] = "Nueva Campaña";
+}
+
+<div class="row justify-content-center mt-2">
+    <div class="col-lg-8">
+        <div class="card-custom">
+            <div class="p-3 border-bottom" style="border-color:var(--surface-container);background:var(--surface-bright);">
+                <h4 class="font-headline-md text-primary m-0">Registrar Nueva Campaña</h4>
+            </div>
+            <div class="p-4">
+                <form asp-action="Create">
+                    <div class="mb-3">
+                        <label asp-for="Nombre" class="font-body-sm fw-semibold text-on-surface mb-1"></label>
+                        <input asp-for="Nombre" class="form-control" placeholder="Ej: Recicla tu PC 2026" required />
+                        <span asp-validation-for="Nombre" class="text-danger font-body-sm"></span>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Fecha" class="font-body-sm fw-semibold text-on-surface mb-1"></label>
+                            <input asp-for="Fecha" class="form-control" type="date" required />
+                            <span asp-validation-for="Fecha" class="text-danger font-body-sm"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Lugar" class="font-body-sm fw-semibold text-on-surface mb-1"></label>
+                            <input asp-for="Lugar" class="form-control" placeholder="Ej: Pabellón de Sistemas" required />
+                            <span asp-validation-for="Lugar" class="text-danger font-body-sm"></span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="ResponsableId" class="font-body-sm fw-semibold text-on-surface mb-1">Docente Responsable</label>
+                        <select asp-for="ResponsableId" class="form-select" required>
+                            <option value="">Seleccione un docente...</option>
+                            @foreach (var d in (List<Docente>)ViewBag.Docentes)
+                            {
+                                <option value="@d.Id">@d.NombreCompleto - @d.Especialidad</option>
+                            }
+                        </select>
+                        <span asp-validation-for="ResponsableId" class="text-danger font-body-sm"></span>
+                        <small class="text-on-surface-variant">¿No encuentras al docente? <a asp-controller="Docentes" asp-action="Create" class="text-primary">Registrar nuevo docente</a></small>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Descripcion" class="font-body-sm fw-semibold text-on-surface mb-1"></label>
+                        <textarea asp-for="Descripcion" class="form-control" rows="3" placeholder="Detalles de la campaña..."></textarea>
+                    </div>
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="Index" class="btn btn-outline-primary d-flex align-items-center gap-1">
+                            <span class="material-symbols-outlined" style="font-size:18px;">arrow_back</span>
+                            Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary d-flex align-items-center gap-2">
+                            <span class="material-symbols-outlined" style="font-size:18px;">save</span>
+                            Guardar Campaña
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

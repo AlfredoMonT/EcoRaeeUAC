@@ -1,0 +1,58 @@
+@model EcoRaeeUac.Models.MaterialEducativo
+
+@{
+    ViewData["Title"] = "Editar Material";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-lg-8">
+        <div class="card-custom">
+            <div class="p-3 border-bottom" style="background:var(--surface-bright)">
+                <h4 class="font-headline-md mb-0 text-on-surface">Editar Material Educativo</h4>
+            </div>
+            <div class="p-4">
+                <form asp-action="Edit" enctype="multipart/form-data">
+                    <input asp-for="Id" type="hidden" />
+                    <div asp-validation-summary="ModelOnly" class="text-on-surface-variant font-body-sm"></div>
+                    <div class="mb-3">
+                        <label asp-for="Titulo" class="form-label font-label-uppercase"></label>
+                        <input asp-for="Titulo" class="form-control" required />
+                        <span asp-validation-for="Titulo" class="text-on-surface-variant font-body-sm"></span>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Tipo" class="form-label font-label-uppercase">Tipo de Material</label>
+                            <select asp-for="Tipo" class="form-select" required>
+                                <option value="Infografía">Infografía</option>
+                                <option value="Video">Video</option>
+                                <option value="PDF">Documento PDF</option>
+                                <option value="Noticia">Noticia</option>
+                            </select>
+                            <span asp-validation-for="Tipo" class="text-on-surface-variant font-body-sm"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label font-label-uppercase">Reemplazar Archivo (opcional)</label>
+                            <input name="archivo" type="file" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="EnlaceUrl" class="form-label font-label-uppercase">Enlace Externo (opcional)</label>
+                        <input asp-for="EnlaceUrl" class="form-control" />
+                    </div>
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="Index" class="btn btn-outline-primary">
+                            <span class="material-symbols-outlined" style="font-size:18px;">arrow_back</span> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <span class="material-symbols-outlined" style="font-size:18px;">save</span> Guardar Cambios
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

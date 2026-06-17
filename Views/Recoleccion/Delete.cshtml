@@ -1,0 +1,47 @@
+@model EcoRaeeUac.Models.RecoleccionRaee
+
+@{
+    ViewData["Title"] = "Eliminar Recolección";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-lg-8">
+        <div class="card-custom">
+            <div class="p-3 border-bottom" style="background:var(--surface-bright);">
+                <h4 class="font-headline-md mb-0" style="color:var(--error);">
+                    <span class="material-symbols-outlined" style="font-size:18px;">warning</span>
+                    Confirmar Eliminación
+                </h4>
+            </div>
+            <div class="p-4">
+                <div class="alert" style="background:var(--error-container); color:var(--on-error-container); border:1px solid var(--error);">
+                    <span class="material-symbols-outlined" style="font-size:18px;">error</span>
+                    <strong>¿Estás seguro de eliminar este registro de recolección?</strong> Esta acción no se puede deshacer.
+                </div>
+                <dl class="row">
+                    <dt class="col-sm-4 font-body-sm text-on-surface-variant">Tipo de Residuo</dt>
+                    <dd class="col-sm-8 font-body-sm text-on-surface">@Model.TipoResiduo</dd>
+                    <dt class="col-sm-4 font-body-sm text-on-surface-variant">Cantidad</dt>
+                    <dd class="col-sm-8 font-body-sm text-on-surface">@Model.Cantidad.ToString("F2") Kg</dd>
+                    <dt class="col-sm-4 font-body-sm text-on-surface-variant">Lugar</dt>
+                    <dd class="col-sm-8 font-body-sm text-on-surface">@Model.LugarRecoleccion</dd>
+                    <dt class="col-sm-4 font-body-sm text-on-surface-variant">Fecha</dt>
+                    <dd class="col-sm-8 font-body-sm text-on-surface">@Model.Fecha.ToShortDateString()</dd>
+                </dl>
+                <form asp-action="Delete">
+                    <input asp-for="Id" type="hidden" />
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="Index" class="btn btn-outline-primary">
+                            <span class="material-symbols-outlined" style="font-size:18px;">arrow_back</span>
+                            Cancelar
+                        </a>
+                        <button type="submit" class="btn" style="background:var(--error); color:var(--on-error); border-color:var(--error);">
+                            <span class="material-symbols-outlined" style="font-size:18px;">delete_forever</span>
+                            Eliminar Definitivamente
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

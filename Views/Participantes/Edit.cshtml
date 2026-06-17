@@ -1,0 +1,76 @@
+@model EcoRaeeUac.Models.Participante
+@using EcoRaeeUac.Models
+
+@{
+    ViewData["Title"] = "Editar Participante";
+}
+
+<div class="row mt-4">
+    <div class="col-md-8 offset-md-2">
+        <div class="card-custom">
+            <div class="p-3 border-bottom" style="background:var(--surface-bright);">
+                <h4 class="font-headline-md mb-0 text-on-surface">Editar Participante</h4>
+            </div>
+            <div class="p-4">
+                <form asp-action="Edit">
+                    <input asp-for="Id" type="hidden" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger font-body-sm"></div>
+                    <div class="mb-3">
+                        <label asp-for="NombreCompleto" class="form-label font-label-uppercase text-on-surface-variant"></label>
+                        <input asp-for="NombreCompleto" class="form-control" />
+                        <span asp-validation-for="NombreCompleto" class="text-danger font-body-sm"></span>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Rol" class="form-label font-label-uppercase text-on-surface-variant"></label>
+                            <select asp-for="Rol" class="form-select">
+                                <option value="Estudiante">Estudiante</option>
+                                <option value="Docente">Docente</option>
+                                <option value="Ciudadano Beneficiario">Ciudadano Beneficiario</option>
+                            </select>
+                            <span asp-validation-for="Rol" class="text-danger font-body-sm"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="DocumentoIdentidad" class="form-label font-label-uppercase text-on-surface-variant"></label>
+                            <input asp-for="DocumentoIdentidad" class="form-control" />
+                            <span asp-validation-for="DocumentoIdentidad" class="text-danger font-body-sm"></span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="CampañaAmbientalId" class="form-label font-label-uppercase text-on-surface-variant">Campaña</label>
+                        <select asp-for="CampañaAmbientalId" class="form-select">
+                            <option value="">Seleccione una campaña...</option>
+                            @foreach (var c in (List<CampañaAmbiental>)ViewBag.Campañas)
+                            {
+                                <option value="@c.Id">@c.Nombre - @c.Fecha.ToShortDateString()</option>
+                            }
+                        </select>
+                        <span asp-validation-for="CampañaAmbientalId" class="text-danger font-body-sm"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="DocenteId" class="form-label font-label-uppercase text-on-surface-variant">Docente Vinculado (opcional)</label>
+                        <select asp-for="DocenteId" class="form-select">
+                            <option value="">Ninguno</option>
+                            @foreach (var d in (List<Docente>)ViewBag.Docentes)
+                            {
+                                <option value="@d.Id">@d.NombreCompleto</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="Index" class="btn btn-outline-primary rounded-2 p-1">
+                            <span class="material-symbols-outlined" style="font-size:18px;">arrow_back</span> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary rounded-2 p-1">
+                            <span class="material-symbols-outlined" style="font-size:18px;">save</span> Guardar Cambios
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,98 @@
+@model EcoRaeeUac.Models.MaterialEducativo
+
+@{
+    ViewData["Title"] = "Detalles del Material";
+    var tipoContenido = !string.IsNullOrEmpty(Model.RutaArchivo) ? Model.ObtenerTipoContenido() : null;
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-lg-8">
+        <div class="card-custom">
+            <div class="p-3 border-bottom d-flex justify-content-between align-items-center" style="background:var(--surface-bright)">
+                <h4 class="font-headline-md mb-0 text-on-surface">@Model.Titulo</h4>
+                <a asp-action="Index" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1">
+                    <span class="material-symbols-outlined" style="font-size:16px;">arrow_back</span> Volver
+                </a>
+            </div>
+            <div class="p-4">
+                <dl class="row mb-3">
+                    <dt class="col-sm-3 text-on-surface-variant font-label-uppercase">Tipo</dt>
+                    <dd class="col-sm-9">
+                        <span class="tag @(Model.Tipo == "Infografía" ? "tag-tertiary" : Model.Tipo == "Video" ? "tag-secondary" : Model.Tipo == "PDF" ? "tag-error" : "tag-primary")">@Model.Tipo</span>
+                    </dd>
+                    <dt class="col-sm-3 text-on-surface-variant font-label-uppercase">Publicado</dt>
+                    <dd class="col-sm-9 text-on-surface font-body-sm">@Model.FechaPublicacion.ToLongDateString()</dd>
+                    @if (!string.IsNullOrEmpty(Model.EnlaceUrl))
+                    {
+                        <dt class="col-sm-3 text-on-surface-variant font-label-uppercase">Enlace</dt>
+                        <dd class="col-sm-9">
+                            <a href="@Model.EnlaceUrl" target="_blank" class="text-primary">@Model.EnlaceUrl</a>
+                        </dd>
+                    }
+                </dl>
+
+                @if (!string.IsNullOrEmpty(Model.RutaArchivo) && tipoContenido != null)
+                {
+                    <div class="border-top pt-3 mb-3" style="border-color:var(--outline-variant);">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h5 class="font-headline-md text-on-surface m-0">Vista previa</h5>
+                            <a asp-action="Download" asp-route-id="@Model.Id" class="btn btn-primary d-flex align-items-center gap-1">
+                                <span class="material-symbols-outlined" style="font-size:18px;">download</span> Descargar
+                            </a>
+                        </div>
+
+                        @if (tipoContenido == "pdf")
+                        {
+                            <div class="rounded-3 overflow-hidden border" style="border-color:var(--outline-variant);background:var(--surface-container-low);">
+                                <iframe src="@Model.RutaArchivo" style="width:100%;height:600px;border:none;"></iframe>
+                            </div>
+                            <div class="d-flex align-items-center gap-2 mt-2 text-on-surface-variant font-body-sm">
+                                <span class="material-symbols-outlined" style="font-size:16px;">picture_as_pdf</span>
+                                <span>Documento PDF — desplázate dentro del visor para ver el contenido completo</span>
+                            </div>
+                        }
+                        else if (tipoContenido == "imagen")
+                        {
+                            <div class="rounded-3 overflow-hidden border d-flex align-items-center justify-content-center p-2" style="border-color:var(--outline-variant);background:var(--surface-container-low);max-height:500px;">
+                                <img src="@Model.RutaArchivo" alt="@Model.Titulo" class="img-fluid" style="max-height:480px;object-fit:contain;" />
+                            </div>
+                        }
+                        else if (tipoContenido == "video")
+                        {
+                            <div class="rounded-3 overflow-hidden border" style="border-color:var(--outline-variant);background:#000;">
+                                <video class="w-100" style="max-height:500px;" controls>
+                                    <source src="@Model.RutaArchivo" />
+                                </video>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="text-center p-5 text-on-surface-variant">
+                                <span class="material-symbols-outlined" style="font-size:48px;">description</span>
+                                <p class="mt-2">Vista previa no disponible para este tipo de archivo.</p>
+                                <a asp-action="Download" asp-route-id="@Model.Id" class="btn btn-primary mt-2">Descargar archivo</a>
+                            </div>
+                        }
+                    </div>
+                }
+
+                <div class="d-flex justify-content-between mt-3 pt-3 border-top" style="border-color:var(--outline-variant);">
+                    <div class="d-flex gap-2">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary d-flex align-items-center gap-1">
+                            <span class="material-symbols-outlined" style="font-size:18px;">edit</span> Editar
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn d-flex align-items-center gap-1" style="background:var(--error);color:#fff">
+                            <span class="material-symbols-outlined" style="font-size:18px;">delete</span> Eliminar
+                        </a>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.RutaArchivo))
+                    {
+                        <a asp-action="Download" asp-route-id="@Model.Id" class="btn btn-outline-primary d-flex align-items-center gap-1">
+                            <span class="material-symbols-outlined" style="font-size:18px;">download</span> Descargar
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

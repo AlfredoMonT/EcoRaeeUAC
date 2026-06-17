@@ -1,0 +1,132 @@
+@model PaginatedList<EcoRaeeUac.Models.Docente>
+
+@{
+    ViewData["Title"] = "Docentes";
+}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+    <div>
+        <h2 class="font-display-lg text-on-surface m-0">Gestión de Docentes</h2>
+        <p class="font-body-lg text-on-surface-variant mt-1">Registro de docentes responsables de campañas ambientales.</p>
+    </div>
+    <a class="btn btn-primary d-flex align-items-center gap-2" asp-action="Create">
+        <span class="material-symbols-outlined" style="font-size:18px;">add</span>
+        Nuevo Docente
+    </a>
+</div>
+
+<form method="get" class="d-flex gap-2 mb-3">
+    <div class="input-group" style="max-width:400px;">
+        <input type="text" name="searchString" class="form-control" placeholder="Buscar docente..." value="@Model.SearchString" />
+        <button class="btn btn-outline-primary" type="submit">
+            <span class="material-symbols-outlined" style="font-size:18px;">search</span>
+        </button>
+        @if (!string.IsNullOrEmpty(Model.SearchString))
+        {
+            <a asp-action="Index" class="btn btn-outline-secondary">Limpiar</a>
+        }
+    </div>
+</form>
+
+<div class="row g-3 mb-4">
+    <div class="col-12">
+        <div class="card-custom p-3 kpi-card">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                    <p class="font-label-uppercase text-on-surface-variant mb-1">Total Docentes</p>
+                    <h3 class="stat-number text-primary m-0">@Model.TotalCount</h3>
+                </div>
+                <div class="d-flex align-items-center justify-content-center rounded-circle bg-secondary-fixed" style="width:40px;height:40px;">
+                    <span class="material-symbols-outlined text-secondary">assignment_ind</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card-custom overflow-hidden">
+    <div class="p-3 border-bottom" style="border-color:var(--surface-container);background:var(--surface-bright);">
+        <h3 class="font-headline-md text-on-surface m-0">Docentes Registrados</h3>
+    </div>
+    <div class="table-responsive">
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th>Nombre Completo</th>
+                    <th>Email</th>
+                    <th>Teléfono</th>
+                    <th>Especialidad</th>
+                    <th>Fecha Registro</th>
+                    <th class="text-end">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-on-surface-variant py-4">No hay docentes registrados.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="avatar rounded-circle" style="width:32px;height:32px;font-size:12px;background:var(--secondary-fixed);color:var(--on-secondary-fixed);">
+                                        @(item.NombreCompleto.Split(' ').Select(s => s[0]).Take(2).Aggregate("", (a, b) => a + b))
+                                    </div>
+                                    <span class="fw-semibold">@item.NombreCompleto</span>
+                                </div>
+                            </td>
+                            <td class="text-on-surface-variant">@item.Email</td>
+                            <td class="text-on-surface-variant">@(item.Telefono ?? "—")</td>
+                            <td><span class="tag tag-primary">@(item.Especialidad ?? "General")</span></td>
+                            <td class="text-on-surface-variant">@item.FechaRegistro.ToShortDateString()</td>
+                            <td class="text-end">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary rounded-2 p-1" title="Ver">
+                                    <span class="material-symbols-outlined" style="font-size:18px;">visibility</span>
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary rounded-2 p-1" title="Editar">
+                                    <span class="material-symbols-outlined" style="font-size:18px;">edit</span>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary rounded-2 p-1" title="Eliminar">
+                                    <span class="material-symbols-outlined" style="font-size:18px;color:var(--error);">delete</span>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    @if (Model.TotalPages > 1)
+    {
+        <div class="d-flex justify-content-between align-items-center p-3 border-top" style="border-color:var(--surface-container);background:var(--surface-bright);">
+            <span class="font-body-sm text-on-surface-variant">
+                Mostrando @((Model.PageIndex - 1) * 10 + 1) a @Math.Min(Model.PageIndex * 10, Model.TotalCount) de @Model.TotalCount registros
+            </span>
+            <nav>
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageIndex - 1)" asp-route-searchString="@Model.SearchString">
+                            <span class="material-symbols-outlined" style="font-size:16px;">chevron_left</span>
+                        </a>
+                    </li>
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-searchString="@Model.SearchString">@i</a>
+                        </li>
+                    }
+                    <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageIndex + 1)" asp-route-searchString="@Model.SearchString">
+                            <span class="material-symbols-outlined" style="font-size:16px;">chevron_right</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    }
+</div>

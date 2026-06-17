@@ -1,0 +1,147 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="mb-4">
+    <h2 class="font-display-lg text-on-surface mb-1">Panel de Control</h2>
+    <p class="font-body-lg text-on-surface-variant">Resumen de métricas de responsabilidad social y ambiental.</p>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-12 col-md-6 col-lg-3">
+        <a asp-controller="Campañas" asp-action="Index" class="text-decoration-none">
+            <div class="card-custom p-3 kpi-card h-100">
+                <div class="blur-circle" style="background:var(--primary-fixed-dim);"></div>
+                <div class="d-flex justify-content-between align-items-start mb-2 position-relative">
+                    <div>
+                        <p class="font-label-uppercase text-on-surface-variant mb-1">Campañas Ambientales</p>
+                        <h3 class="stat-number text-primary m-0">@ViewBag.TotalCampañas</h3>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-center rounded-circle bg-primary-fixed" style="width:40px;height:40px;">
+                        <span class="material-symbols-outlined text-primary">eco</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-12 col-md-6 col-lg-3">
+        <a asp-controller="Participantes" asp-action="Index" class="text-decoration-none">
+            <div class="card-custom p-3 kpi-card h-100">
+                <div class="blur-circle" style="background:var(--secondary-fixed-dim);"></div>
+                <div class="d-flex justify-content-between align-items-start mb-2 position-relative">
+                    <div>
+                        <p class="font-label-uppercase text-on-surface-variant mb-1">Participantes</p>
+                        <h3 class="stat-number text-secondary m-0">@ViewBag.TotalParticipantes</h3>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-center rounded-circle bg-secondary-fixed" style="width:40px;height:40px;">
+                        <span class="material-symbols-outlined text-secondary">groups</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-12 col-md-6 col-lg-3">
+        <a asp-controller="Docentes" asp-action="Index" class="text-decoration-none">
+            <div class="card-custom p-3 kpi-card h-100">
+                <div class="blur-circle" style="background:var(--tertiary-fixed-dim);"></div>
+                <div class="d-flex justify-content-between align-items-start mb-2 position-relative">
+                    <div>
+                        <p class="font-label-uppercase text-on-surface-variant mb-1">Docentes</p>
+                        <h3 class="stat-number text-tertiary m-0">@ViewBag.TotalDocentes</h3>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-center rounded-circle bg-tertiary-fixed" style="width:40px;height:40px;">
+                        <span class="material-symbols-outlined text-tertiary">assignment_ind</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-12 col-md-6 col-lg-3">
+        <a asp-controller="Recoleccion" asp-action="Index" class="text-decoration-none">
+            <div class="card-custom p-3 kpi-card h-100">
+                <div class="blur-circle" style="background:var(--primary-fixed-dim);"></div>
+                <div class="d-flex justify-content-between align-items-start mb-2 position-relative">
+                    <div>
+                        <p class="font-label-uppercase text-on-surface-variant mb-1">RAEE Recolectado</p>
+                        <h3 class="stat-number text-primary m-0">@ViewBag.TotalRaeeKg.ToString("F1") <span class="font-body-lg text-on-surface-variant">kg</span></h3>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-center rounded-circle bg-primary-fixed" style="width:40px;height:40px;">
+                        <span class="material-symbols-outlined text-primary">recycling</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-12 col-md-6 col-lg-3">
+        <a asp-controller="Recoleccion" asp-action="Index" class="text-decoration-none">
+            <div class="card-custom p-3 kpi-card h-100">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <p class="font-label-uppercase text-on-surface-variant mb-1">CO₂ Evitado</p>
+                        <h3 class="stat-number text-secondary m-0">@ViewBag.TotalCo2Kg.ToString("F1") <span class="font-body-lg text-on-surface-variant">kg</span></h3>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-center rounded-circle bg-secondary-fixed" style="width:40px;height:40px;">
+                        <span class="material-symbols-outlined text-secondary">co2</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-12 col-md-6 col-lg-3">
+        <a asp-controller="MaterialEducativo" asp-action="Index" class="text-decoration-none">
+            <div class="card-custom p-3 kpi-card h-100">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <p class="font-label-uppercase text-on-surface-variant mb-1">Material Educativo</p>
+                        <h3 class="stat-number text-tertiary m-0">@ViewBag.TotalMateriales</h3>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-center rounded-circle bg-tertiary-fixed" style="width:40px;height:40px;">
+                        <span class="material-symbols-outlined text-tertiary">menu_book</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-12 col-md-6 col-lg-3">
+        <a asp-controller="Reportes" asp-action="Index" class="text-decoration-none">
+            <div class="card-custom p-3 kpi-card h-100">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <p class="font-label-uppercase text-on-surface-variant mb-1">Reportes</p>
+                        <h3 class="stat-number text-primary m-0">Impacto</h3>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-center rounded-circle bg-primary-fixed" style="width:40px;height:40px;">
+                        <span class="material-symbols-outlined text-primary">analytics</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-12 col-md-6 col-lg-3">
+        <a asp-controller="Reportes" asp-action="ExportarExcel" class="text-decoration-none">
+            <div class="card-custom p-3 kpi-card h-100">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <p class="font-label-uppercase text-on-surface-variant mb-1">Exportar</p>
+                        <h3 class="stat-number text-secondary m-0">Excel</h3>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-center rounded-circle bg-secondary-fixed" style="width:40px;height:40px;">
+                        <span class="material-symbols-outlined text-secondary">download</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="card-custom p-4">
+    <div class="text-center text-on-surface-variant">
+        <p class="mb-0">
+            <strong class="text-primary">EcoRAEE UAC</strong> — Sistema para la gestión integral de residuos eléctricos y electrónicos.
+            Universidad Andina del Cusco.
+        </p>
+    </div>
+</div>

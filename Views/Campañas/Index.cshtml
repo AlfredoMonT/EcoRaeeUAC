@@ -1,0 +1,159 @@
+@model PaginatedList<EcoRaeeUac.Models.CampañaAmbiental>
+
+@{
+    ViewData["Title"] = "Campañas Ambientales";
+}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+    <div>
+        <h2 class="font-display-lg text-on-surface m-0">Gestión de Campañas Ambientales</h2>
+        <p class="font-body-lg text-on-surface-variant mt-1">Administre los eventos de concientización y recolección de RAEE.</p>
+    </div>
+    <a class="btn btn-primary d-flex align-items-center gap-2" asp-action="Create">
+        <span class="material-symbols-outlined" style="font-size:18px;">add</span>
+        Nueva Campaña
+    </a>
+</div>
+
+<form method="get" class="d-flex gap-2 mb-3">
+    <div class="input-group" style="max-width:400px;">
+        <input type="text" name="searchString" class="form-control" placeholder="Buscar campaña..." value="@Model.SearchString" />
+        <button class="btn btn-outline-primary" type="submit">
+            <span class="material-symbols-outlined" style="font-size:18px;">search</span>
+        </button>
+        @if (!string.IsNullOrEmpty(Model.SearchString))
+        {
+            <a asp-action="Index" class="btn btn-outline-secondary">Limpiar</a>
+        }
+    </div>
+</form>
+
+<div class="row g-3 mb-4">
+    <div class="col-12 col-md-4">
+        <div class="stat-card">
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <div class="d-flex align-items-center justify-content-center rounded-circle bg-tertiary-fixed" style="width:32px;height:32px;">
+                    <span class="material-symbols-outlined text-tertiary" style="font-size:18px;">event_available</span>
+                </div>
+                <h3 class="font-label-uppercase text-on-surface-variant m-0">Registradas</h3>
+            </div>
+            <p class="stat-number text-primary m-0">@Model.TotalCount</p>
+        </div>
+    </div>
+    <div class="col-12 col-md-4">
+        <div class="stat-card">
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <div class="d-flex align-items-center justify-content-center rounded-circle bg-secondary-fixed" style="width:32px;height:32px;">
+                    <span class="material-symbols-outlined text-secondary" style="font-size:18px;">group</span>
+                </div>
+                <h3 class="font-label-uppercase text-on-surface-variant m-0">Participantes Vinculados</h3>
+            </div>
+            <p class="stat-number text-secondary m-0">@Model.Sum(c => c.Participantes?.Count ?? 0)</p>
+        </div>
+    </div>
+    <div class="col-12 col-md-4">
+        <div class="stat-card">
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <div class="d-flex align-items-center justify-content-center rounded-circle bg-primary-fixed" style="width:32px;height:32px;">
+                    <span class="material-symbols-outlined text-primary" style="font-size:18px;">calendar_month</span>
+                </div>
+                <h3 class="font-label-uppercase text-on-surface-variant m-0">Próximas Activas</h3>
+            </div>
+            <p class="stat-number text-primary m-0">@Model.Count(c => c.Fecha >= DateTime.Now)</p>
+        </div>
+    </div>
+</div>
+
+<div class="card-custom overflow-hidden">
+    <div class="p-3 border-bottom d-flex justify-content-between align-items-center" style="border-color:var(--surface-container);background:var(--surface-bright);">
+        <h3 class="font-headline-md text-on-surface m-0">Campañas Registradas</h3>
+    </div>
+    <div class="table-responsive">
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Fecha</th>
+                    <th>Lugar</th>
+                    <th>Responsable</th>
+                    <th>Participantes</th>
+                    <th class="text-end">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-on-surface-variant py-4">No hay campañas registradas todavía.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div style="width:8px;height:8px;" class="rounded-circle @(item.Fecha >= DateTime.Now ? "bg-primary" : "bg-surface-variant")"></div>
+                                    <span class="fw-semibold">@item.Nombre</span>
+                                </div>
+                            </td>
+                            <td class="text-on-surface-variant">@item.Fecha.ToShortDateString()</td>
+                            <td class="text-on-surface-variant">@item.Lugar</td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="avatar rounded-circle" style="width:28px;height:28px;font-size:11px;background:var(--secondary-fixed);color:var(--on-secondary-fixed);">
+                                        @(item.Responsable?.NombreCompleto?.Split(' ').Select(s => s[0]).Take(2).Aggregate("", (a, b) => a + b) ?? "?")
+                                    </div>
+                                    <span>@item.Responsable?.NombreCompleto</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="tag tag-primary">@(item.Participantes?.Count ?? 0)</span>
+                            </td>
+                            <td class="text-end">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary rounded-2 p-1" title="Ver">
+                                    <span class="material-symbols-outlined" style="font-size:18px;">visibility</span>
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary rounded-2 p-1" title="Editar">
+                                    <span class="material-symbols-outlined" style="font-size:18px;">edit</span>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary rounded-2 p-1" title="Eliminar">
+                                    <span class="material-symbols-outlined" style="font-size:18px;color:var(--error);">delete</span>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    @if (Model.TotalPages > 1)
+    {
+        <div class="d-flex justify-content-between align-items-center p-3 border-top" style="border-color:var(--surface-container);background:var(--surface-bright);">
+            <span class="font-body-sm text-on-surface-variant">
+                Mostrando @((Model.PageIndex - 1) * 10 + 1) a @Math.Min(Model.PageIndex * 10, Model.TotalCount) de @Model.TotalCount registros
+            </span>
+            <nav>
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageIndex - 1)" asp-route-searchString="@Model.SearchString">
+                            <span class="material-symbols-outlined" style="font-size:16px;">chevron_left</span>
+                        </a>
+                    </li>
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-searchString="@Model.SearchString">@i</a>
+                        </li>
+                    }
+                    <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageIndex + 1)" asp-route-searchString="@Model.SearchString">
+                            <span class="material-symbols-outlined" style="font-size:16px;">chevron_right</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    }
+</div>

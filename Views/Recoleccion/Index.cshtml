@@ -1,0 +1,221 @@
+@model PaginatedList<EcoRaeeUac.Models.RecoleccionRaee>
+
+@{
+    ViewData["Title"] = "Recolección RAEE";
+}
+
+<div class="mb-4">
+    <h2 class="font-display-lg text-on-surface m-0">Módulo de Recolección RAEE</h2>
+    <p class="font-body-lg text-on-surface-variant mt-1">Gestión y registro de entradas de residuos de aparatos eléctricos y electrónicos.</p>
+</div>
+
+<form method="get" class="d-flex gap-2 mb-3">
+    <div class="input-group" style="max-width:400px;">
+        <input type="text" name="searchString" class="form-control" placeholder="Buscar por tipo o lugar..." value="@Model.SearchString" />
+        <button class="btn btn-outline-primary" type="submit">
+            <span class="material-symbols-outlined" style="font-size:18px;">search</span>
+        </button>
+        @if (!string.IsNullOrEmpty(Model.SearchString))
+        {
+            <a asp-action="Index" class="btn btn-outline-secondary">Limpiar</a>
+        }
+    </div>
+    @if (!string.IsNullOrEmpty(ViewBag.TipoSeleccionado))
+    {
+        <input type="hidden" name="tipoResiduo" value="@ViewBag.TipoSeleccionado" />
+    }
+</form>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card-custom p-3 kpi-card">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                    <p class="font-label-uppercase text-on-surface-variant mb-1">Total Recolectado</p>
+                    <h3 class="stat-number text-primary m-0">@ViewBag.TotalKg.ToString("F1") <span class="font-body-lg text-on-surface-variant">kg</span></h3>
+                </div>
+                <div class="d-flex align-items-center justify-content-center rounded-circle bg-primary-fixed" style="width:40px;height:40px;">
+                    <span class="material-symbols-outlined text-primary">recycling</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card-custom p-3 kpi-card">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                    <p class="font-label-uppercase text-on-surface-variant mb-1">CO₂ Evitado</p>
+                    <h3 class="stat-number text-secondary m-0">@ViewBag.TotalCo2.ToString("F1") <span class="font-body-lg text-on-surface-variant">kg</span></h3>
+                </div>
+                <div class="d-flex align-items-center justify-content-center rounded-circle bg-secondary-fixed" style="width:40px;height:40px;">
+                    <span class="material-symbols-outlined text-secondary">co2</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card-custom p-3 kpi-card">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                    <p class="font-label-uppercase text-on-surface-variant mb-1">Árboles Salvados</p>
+                    <h3 class="stat-number text-tertiary m-0">@ViewBag.TotalArboles</h3>
+                </div>
+                <div class="d-flex align-items-center justify-content-center rounded-circle bg-tertiary-fixed" style="width:40px;height:40px;">
+                    <span class="material-symbols-outlined text-tertiary">forest</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card-custom p-3 kpi-card">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                    <p class="font-label-uppercase text-on-surface-variant mb-1">Energía Ahorrada</p>
+                    <h3 class="stat-number text-on-surface m-0">@ViewBag.TotalEnergia.ToString("F1") <span class="font-body-lg text-on-surface-variant">kWh</span></h3>
+                </div>
+                <div class="d-flex align-items-center justify-content-center rounded-circle bg-primary-fixed" style="width:40px;height:40px;">
+                    <span class="material-symbols-outlined text-primary">bolt</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-4">
+        <div class="card-custom p-4 h-100">
+            <div class="border-bottom pb-2 mb-3" style="border-color:var(--outline-variant);">
+                <h3 class="font-headline-md text-on-surface m-0">Registrar Nueva Entrada</h3>
+            </div>
+            <form method="post" asp-action="Create" class="d-flex flex-column gap-3">
+                <div>
+                    <label asp-for="First().TipoResiduo" class="font-body-sm fw-semibold text-on-surface mb-1">Tipo de Residuo</label>
+                    <select name="TipoResiduo" class="form-select" required>
+                        <option value="">Seleccione una categoría...</option>
+                        <option value="Computadoras">Computadoras</option>
+                        <option value="Monitores">Monitores y Pantallas</option>
+                        <option value="Celulares">Celulares</option>
+                        <option value="Teclados">Teclados y Ratones</option>
+                        <option value="Cables">Cables y Adaptadores</option>
+                        <option value="Impresoras">Impresoras</option>
+                        <option value="Baterías">Baterías</option>
+                        <option value="Pequeños Electrodomésticos">Pequeños Electrodomésticos</option>
+                        <option value="Otros">Otros</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="font-body-sm fw-semibold text-on-surface mb-1">Cantidad (Kg)</label>
+                    <input name="Cantidad" type="number" step="0.01" min="0" class="form-control" placeholder="Ej. 15.5" required />
+                </div>
+                <div>
+                    <label class="font-body-sm fw-semibold text-on-surface mb-1">Lugar de Recolección</label>
+                    <input name="LugarRecoleccion" type="text" class="form-control" placeholder="Ej. Pabellón de Ingenierías" required />
+                </div>
+                <div>
+                    <label class="font-body-sm fw-semibold text-on-surface mb-1">Fecha de Ingreso</label>
+                    <input name="Fecha" type="date" class="form-control" required value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                </div>
+                <button type="submit" class="btn btn-primary d-flex align-items-center justify-content-center gap-2 mt-2">
+                    <span class="material-symbols-outlined fill" style="font-size:18px;">add_circle</span>
+                    Registrar RAEE
+                </button>
+            </form>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card-custom overflow-hidden h-100">
+            <div class="p-3 border-bottom d-flex justify-content-between align-items-center" style="border-color:var(--outline-variant);">
+                <h3 class="font-headline-md text-on-surface m-0">Actividad Reciente</h3>
+                <div>
+                    <form method="get" class="d-flex gap-2 align-items-center">
+                        @Html.Hidden("searchString", Model.SearchString)
+                        <select name="tipoResiduo" class="form-select" style="width:auto;font-size:14px;padding:0.25rem 1rem;" onchange="this.form.submit()">
+                            <option value="">Todos los tipos</option>
+                            <option value="Computadoras" selected="@(ViewBag.TipoSeleccionado == "Computadoras")">Computadoras</option>
+                            <option value="Monitores" selected="@(ViewBag.TipoSeleccionado == "Monitores")">Monitores</option>
+                            <option value="Celulares" selected="@(ViewBag.TipoSeleccionado == "Celulares")">Celulares</option>
+                            <option value="Impresoras" selected="@(ViewBag.TipoSeleccionado == "Impresoras")">Impresoras</option>
+                            <option value="Baterías" selected="@(ViewBag.TipoSeleccionado == "Baterías")">Baterías</option>
+                            <option value="Otros" selected="@(ViewBag.TipoSeleccionado == "Otros")">Otros</option>
+                        </select>
+                        <a asp-action="Index" class="btn btn-outline-primary btn-sm">Limpiar</a>
+                    </form>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table-custom">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Tipo de Residuo</th>
+                            <th>Lugar</th>
+                            <th class="text-end">Cantidad</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center text-on-surface-variant py-4">No hay registros de recolección.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="text-nowrap">@item.Fecha.ToShortDateString()</td>
+                                    <td>
+                                        <span class="tag tag-tertiary">@item.TipoResiduo</span>
+                                    </td>
+                                    <td class="text-on-surface-variant">@item.LugarRecoleccion</td>
+                                    <td class="text-end fw-semibold">@item.Cantidad.ToString("F2") Kg</td>
+                                    <td class="text-end">
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary rounded-2 p-1" title="Ver">
+                                            <span class="material-symbols-outlined" style="font-size:18px;">visibility</span>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary rounded-2 p-1" title="Editar">
+                                            <span class="material-symbols-outlined" style="font-size:18px;">edit</span>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary rounded-2 p-1" title="Eliminar">
+                                            <span class="material-symbols-outlined" style="font-size:18px;color:var(--error);">delete</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @if (Model.TotalPages > 1)
+            {
+                <div class="d-flex justify-content-between align-items-center p-3 border-top" style="border-color:var(--outline-variant);">
+                    <span class="font-body-sm text-on-surface-variant">
+                        Mostrando @((Model.PageIndex - 1) * 10 + 1) a @Math.Min(Model.PageIndex * 10, Model.TotalCount) de @Model.TotalCount registros
+                    </span>
+                    <nav>
+                        <ul class="pagination pagination-sm mb-0">
+                            <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                                <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageIndex - 1)" asp-route-searchString="@Model.SearchString" asp-route-tipoResiduo="@ViewBag.TipoSeleccionado">
+                                    <span class="material-symbols-outlined" style="font-size:16px;">chevron_left</span>
+                                </a>
+                            </li>
+                            @for (int i = 1; i <= Model.TotalPages; i++)
+                            {
+                                <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                                    <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-searchString="@Model.SearchString" asp-route-tipoResiduo="@ViewBag.TipoSeleccionado">@i</a>
+                                </li>
+                            }
+                            <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                                <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageIndex + 1)" asp-route-searchString="@Model.SearchString" asp-route-tipoResiduo="@ViewBag.TipoSeleccionado">
+                                    <span class="material-symbols-outlined" style="font-size:16px;">chevron_right</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            }
+        </div>
+    </div>
+</div>

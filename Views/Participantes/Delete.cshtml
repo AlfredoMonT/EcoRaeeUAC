@@ -1,0 +1,44 @@
+@model EcoRaeeUac.Models.Participante
+
+@{
+    ViewData["Title"] = "Eliminar Participante";
+}
+
+<div class="row mt-4">
+    <div class="col-md-8 offset-md-2">
+        <div class="card-custom">
+            <div class="p-3 border-bottom" style="background:var(--surface-bright);">
+                <h4 class="font-headline-md mb-0 text-on-surface">Confirmar Eliminación</h4>
+            </div>
+            <div class="p-4">
+                <div class="alert alert-danger d-flex align-items-center gap-2" role="alert" style="background-color:var(--error-container); color:var(--on-error-container); border: none; border-radius: 0.5rem;">
+                    <span class="material-symbols-outlined" style="font-size:18px;">warning</span>
+                    <span class="font-body-sm"><strong>¿Estás seguro de eliminar este participante?</strong> Esta acción no se puede deshacer.</span>
+                </div>
+                <dl class="row">
+                    <dt class="col-sm-4 font-label-uppercase text-on-surface-variant">Nombre Completo</dt>
+                    <dd class="col-sm-8 font-body-sm text-on-surface">@Model.NombreCompleto</dd>
+                    <dt class="col-sm-4 font-label-uppercase text-on-surface-variant">Rol</dt>
+                    <dd class="col-sm-8">
+                        <span class="tag tag-primary">@Model.Rol</span>
+                    </dd>
+                    <dt class="col-sm-4 font-label-uppercase text-on-surface-variant">Documento</dt>
+                    <dd class="col-sm-8 font-body-sm text-on-surface">@Model.DocumentoIdentidad</dd>
+                    <dt class="col-sm-4 font-label-uppercase text-on-surface-variant">Campaña</dt>
+                    <dd class="col-sm-8 font-body-sm text-on-surface">@Model.CampañaAmbiental?.Nombre</dd>
+                </dl>
+                <form asp-action="Delete">
+                    <input asp-for="Id" type="hidden" />
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="Index" class="btn btn-outline-primary rounded-2 p-1">
+                            <span class="material-symbols-outlined" style="font-size:18px;">arrow_back</span> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-outline-primary rounded-2 p-1" style="color:var(--error); border-color:var(--error);">
+                            <span class="material-symbols-outlined" style="font-size:18px;">delete_forever</span> Eliminar Definitivamente
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

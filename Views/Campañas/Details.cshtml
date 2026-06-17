@@ -1,0 +1,87 @@
+@model EcoRaeeUac.Models.CampañaAmbiental
+
+@{
+    ViewData["Title"] = "Detalles de Campaña";
+}
+
+<div class="row mt-4">
+    <div class="col-md-8 offset-md-2">
+        <div class="card-custom">
+            <div class="card-header d-flex justify-content-between align-items-center p-3" style="background: var(--surface-bright); border-bottom: 1px solid var(--outline-variant);">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="material-symbols-outlined" style="font-size: 18px; color: var(--primary);">campaign</span>
+                    <h4 class="font-headline-md mb-0 text-primary">Detalles de la Campaña</h4>
+                </div>
+                <a asp-action="Index" class="btn btn-outline-primary btn-sm">
+                    <span class="material-symbols-outlined" style="font-size: 18px;">arrow_back</span> Volver
+                </a>
+            </div>
+            <div class="card-body p-4">
+                <dl class="row">
+                    <dt class="col-sm-4 text-on-surface-variant font-body-sm">Nombre</dt>
+                    <dd class="col-sm-8 text-on-surface">@Model.Nombre</dd>
+
+                    <dt class="col-sm-4 text-on-surface-variant font-body-sm">Fecha</dt>
+                    <dd class="col-sm-8 text-on-surface">@Model.Fecha.ToLongDateString()</dd>
+
+                    <dt class="col-sm-4 text-on-surface-variant font-body-sm">Lugar</dt>
+                    <dd class="col-sm-8 text-on-surface">@Model.Lugar</dd>
+
+                    <dt class="col-sm-4 text-on-surface-variant font-body-sm">Responsable</dt>
+                    <dd class="col-sm-8 text-on-surface">
+                        <a asp-controller="Docentes" asp-action="Details" asp-route-id="@Model.ResponsableId" class="text-primary">
+                            @Model.Responsable?.NombreCompleto
+                        </a>
+                    </dd>
+
+                    <dt class="col-sm-4 text-on-surface-variant font-body-sm">Descripción</dt>
+                    <dd class="col-sm-8 text-on-surface">@Model.Descripcion</dd>
+
+                    <dt class="col-sm-4 text-on-surface-variant font-body-sm">Participantes</dt>
+                    <dd class="col-sm-8 text-on-surface">
+                        <span class="badge" style="background: var(--primary);">@(Model.Participantes?.Count ?? 0)</span>
+                    </dd>
+                </dl>
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+                        <span class="material-symbols-outlined" style="font-size: 18px;">edit</span> Editar
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn" style="background: var(--error); color: white;">
+                        <span class="material-symbols-outlined" style="font-size: 18px;">delete</span> Eliminar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.Participantes != null && Model.Participantes.Any())
+        {
+            <div class="card-custom mt-3">
+                <div class="card-header d-flex align-items-center gap-2 p-3" style="background: var(--surface-bright); border-bottom: 1px solid var(--outline-variant);">
+                    <span class="material-symbols-outlined" style="font-size: 18px; color: var(--primary);">people</span>
+                    <h5 class="font-headline-md mb-0 text-primary">Participantes Registrados</h5>
+                </div>
+                <div class="card-body p-4">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th class="text-on-surface-variant font-body-sm">Nombre</th>
+                                <th class="text-on-surface-variant font-body-sm">Rol</th>
+                                <th class="text-on-surface-variant font-body-sm">Documento</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var p in Model.Participantes)
+                            {
+                                <tr>
+                                    <td class="text-on-surface">@p.NombreCompleto</td>
+                                    <td class="text-on-surface">@p.Rol</td>
+                                    <td class="text-on-surface">@p.DocumentoIdentidad</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+</div>

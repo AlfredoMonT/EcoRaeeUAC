@@ -1,0 +1,192 @@
+@model PaginatedList<EcoRaeeUac.Models.Participante>
+
+@{
+    ViewData["Title"] = "Participantes";
+}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+    <div>
+        <h2 class="font-display-lg text-on-surface m-0">Participantes del Proyecto</h2>
+        <p class="font-body-lg text-on-surface-variant mt-1">Gestión y visualización de todos los actores involucrados en EcoRAEE UAC.</p>
+    </div>
+    <a class="btn btn-primary d-flex align-items-center gap-2" asp-action="Create">
+        <span class="material-symbols-outlined" style="font-size:18px;">person_add</span>
+        Añadir Participante
+    </a>
+</div>
+
+<form method="get" class="d-flex gap-2 mb-3">
+    <div class="input-group" style="max-width:400px;">
+        <input type="text" name="searchString" class="form-control" placeholder="Buscar participante..." value="@Model.SearchString" />
+        <button class="btn btn-outline-primary" type="submit">
+            <span class="material-symbols-outlined" style="font-size:18px;">search</span>
+        </button>
+        @if (!string.IsNullOrEmpty(Model.SearchString))
+        {
+            <a asp-action="Index" class="btn btn-outline-secondary">Limpiar</a>
+        }
+    </div>
+    @if (ViewBag.CampañaSeleccionada != null)
+    {
+        <input type="hidden" name="campañaId" value="@ViewBag.CampañaSeleccionada" />
+    }
+</form>
+
+<div class="row g-3 mb-4">
+    <div class="col-12 col-md-4">
+        <div class="card-custom p-3 kpi-card">
+            <div class="blur-circle" style="background:var(--tertiary-fixed-dim);"></div>
+            <div class="d-flex justify-content-between align-items-start mb-2 position-relative">
+                <div>
+                    <p class="font-label-uppercase text-on-surface-variant mb-1">Total Participantes</p>
+                    <h3 class="stat-number text-on-surface m-0">@Model.TotalCount</h3>
+                </div>
+                <div class="d-flex align-items-center justify-content-center rounded-circle bg-tertiary-fixed" style="width:40px;height:40px;">
+                    <span class="material-symbols-outlined text-tertiary">groups</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card-custom overflow-hidden">
+    <div class="p-3 border-bottom d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3" style="border-color:var(--surface-container);">
+        <div class="filter-wrap">
+            <div class="filter-bar">
+                <button class="btn-filter active" data-filter="all">Todos</button>
+                <button class="btn-filter" data-filter="Estudiante">Estudiantes</button>
+                <button class="btn-filter" data-filter="Docente">Docentes</button>
+            </div>
+        </div>
+        <div class="position-relative" style="width:100%;max-width:260px;">
+            <span class="material-symbols-outlined position-absolute" style="left:12px;top:50%;transform:translateY(-50%);font-size:18px;color:var(--outline);">search</span>
+            <input type="text" class="form-control" id="searchParticipante" placeholder="Buscar participante..." style="padding-left:36px;font-size:14px;" />
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table-custom" id="participantesTable">
+            <thead>
+                <tr>
+                    <th>Nombre Completo</th>
+                    <th>Rol</th>
+                    <th>Documento</th>
+                    <th>Campaña</th>
+                    <th>Docente Vinculado</th>
+                    <th class="text-end">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-on-surface-variant py-4">No hay participantes registrados.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr data-rol="@item.Rol">
+                            <td class="fw-semibold">@item.NombreCompleto</td>
+                            <td>
+                                <span class="tag @(item.Rol == "Estudiante" ? "tag-primary" : item.Rol == "Docente" ? "tag-secondary" : "tag-tertiary")">
+                                    @item.Rol
+                                </span>
+                            </td>
+                            <td class="text-on-surface-variant">@item.DocumentoIdentidad</td>
+                            <td>
+                                <a asp-controller="Campañas" asp-action="Details" asp-route-id="@item.CampañaAmbientalId" class="text-primary text-decoration-none">
+                                    @item.CampañaAmbiental?.Nombre
+                                </a>
+                            </td>
+                            <td>
+                                @if (item.Docente != null)
+                                {
+                                    <a asp-controller="Docentes" asp-action="Details" asp-route-id="@item.DocenteId" class="text-on-surface-variant text-decoration-none">
+                                        @item.Docente.NombreCompleto
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="text-on-surface-variant">—</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary rounded-2 p-1" title="Ver">
+                                    <span class="material-symbols-outlined" style="font-size:18px;">visibility</span>
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary rounded-2 p-1" title="Editar">
+                                    <span class="material-symbols-outlined" style="font-size:18px;">edit</span>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary rounded-2 p-1" title="Eliminar">
+                                    <span class="material-symbols-outlined" style="font-size:18px;color:var(--error);">delete</span>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    @if (Model.TotalPages > 1)
+    {
+        <div class="d-flex justify-content-between align-items-center p-3 border-top" style="border-color:var(--surface-container);background:var(--surface-bright);">
+            <span class="font-body-sm text-on-surface-variant">
+                Mostrando @((Model.PageIndex - 1) * 10 + 1) a @Math.Min(Model.PageIndex * 10, Model.TotalCount) de @Model.TotalCount registros
+            </span>
+            <nav>
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageIndex - 1)" asp-route-searchString="@Model.SearchString" asp-route-campañaId="@ViewBag.CampañaSeleccionada">
+                            <span class="material-symbols-outlined" style="font-size:16px;">chevron_left</span>
+                        </a>
+                    </li>
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-searchString="@Model.SearchString" asp-route-campañaId="@ViewBag.CampañaSeleccionada">@i</a>
+                        </li>
+                    }
+                    <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageIndex + 1)" asp-route-searchString="@Model.SearchString" asp-route-campañaId="@ViewBag.CampañaSeleccionada">
+                            <span class="material-symbols-outlined" style="font-size:16px;">chevron_right</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterBtns = document.querySelectorAll('.btn-filter');
+            const searchInput = document.getElementById('searchParticipante');
+            const rows = document.querySelectorAll('#participantesTable tbody tr');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    applyFilters();
+                });
+            });
+
+            searchInput?.addEventListener('input', applyFilters);
+
+            function applyFilters() {
+                const activeFilter = document.querySelector('.btn-filter.active')?.dataset.filter || 'all';
+                const searchTerm = (searchInput?.value || '').toLowerCase();
+
+                rows.forEach(row => {
+                    const rol = row.dataset.rol;
+                    const text = row.textContent.toLowerCase();
+                    const matchRol = activeFilter === 'all' || rol === activeFilter;
+                    const matchSearch = text.includes(searchTerm);
+                    row.style.display = matchRol && matchSearch ? '' : 'none';
+                });
+            }
+        });
+    </script>
+}
